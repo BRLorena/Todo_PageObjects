@@ -1,0 +1,25 @@
+DSL
+
+Pagina:
+  - Barra de nav. 
+  - Todo 
+    - Nome
+    - Descrição
+    - urgente
+    - Botão
+    * Criar Todo
+      & Nome
+      & Descrição
+      & urgente
+      & click
+  - A fazer
+    - Cards
+  - Fazendo
+    - Cards
+  - Pronto
+    - Cards
+  - Card
+    - Nome/title
+    - description
+    - botao azul (pronto)
+    - botao vermelho (cancelar)
