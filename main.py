@@ -1,3 +1,7 @@
+import abc
+
+from selenium.common.exceptions import NoSuchElementException as exceptElement
+
 from element import PageElement
 from locator import Locator
 
@@ -16,19 +20,30 @@ class Todo(PageElement):
       self.webdriver.find_element(*self.urgent).click()
     self.webdriver.find_element(*self.submit).click()
 
-class AFazer(PageElement):
+class CardContainer(PageElement, abc.ABC):
+
+  def todos(self):
+    cards = self.find_elements(self.card)
+    # return [Card(card) for card in cards] #Pythinic
+    po_cards = []
+    for card in cards:
+      po_cards.append(Card(card))
+    return po_cards
+
+class AFazer(CardContainer):
 
   fieldset = Locator.FIELDSET
   card = Locator.CARD
 
-  def get_todos(self):
-    cards = self.find_elements(self.card)
-    return [Card(card) for card in cards] #Pythinic
-    # po_cards = []
-    # for card in cards:
-    #   po_cards.append(Card(card))
-    # print(po_cards)
-    # return po_cards
+class Fazendo(CardContainer):
+
+  fieldset = Locator.FIELDSET_B
+  card = Locator.CARD
+
+class Pronto(CardContainer):
+
+  fieldset = Locator.FIELDSET_C
+  card = Locator.CARD
 
 class Card:
 
@@ -38,20 +53,26 @@ class Card:
     self.description = Locator.CARD_DESCRIPTION
     self.do = Locator.CARD_DO_BUTTON
     self.cancel = Locator.CARD_CANCEL_BUTTON
+    self.refazer = Locator.CARD_REFAZER_BUTTON
     self._load()
 
-  def do(self):
-    self.selenium_object.find_element(*self._do).click()
+  def click_do(self):
+    self.selenium_object.find_element(*self.do).click()
 
-  def cancel(self):
-    self.selenium_object.find_element(*self._cancel).click()
+  def click_cancel(self):
+    try:
+      self.selenium_object.find_element(*self.cancel).click()
+    except exceptElement:
+      print('Elemento não tem botão cancelar, click em Refazer')
+      self.selenium_object.find_element(*self.refazer).click()
 
+  
   def _load(self):
     self.name = self.selenium_object.find_element(*self.name).text
     self.description = self.selenium_object.find_element(*self.description).text
 
   def __repr__(self):
-    return f'Card(name = "{self.name}", description = "{self.description}")'
+    return f'Card(name ="{self.name}", description = "{self.description}")'
 
 # -----------------------------------------------------------------
 
@@ -70,8 +91,22 @@ todo_element.create_todo(
 )
 
 a_fazer = AFazer(driver,url)
-todos = a_fazer.get_todos()
-print(a_fazer.get_todos())
-# pega o primeiro card da lista e executa a func. do()
-todos[0].do()
+todos = a_fazer.todos()
+# print(a_fazer.todos())
+
+# pega o primeiro card da lista e clica em Fazer ou cancel. 
+todos[0].click_do()
+
+fazendo = Fazendo(driver)
+todos[0].click_do() # move P/ Pronto
+
+pronto = Pronto(driver)
+# print(pronto.todos())
+todos[0].click_cancel() # click em refazer 
+
+
+
+
+
+
 
