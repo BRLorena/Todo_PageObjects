@@ -22,6 +22,7 @@ class Todo(PageElement):
 
 class CardContainer(PageElement, abc.ABC):
 
+  @property
   def todos(self):
     cards = self.find_elements(self.card)
     # return [Card(card) for card in cards] #Pythinic
