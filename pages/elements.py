@@ -1,9 +1,9 @@
 import abc
 
+from page_objects import PageElement
 from selenium.common.exceptions import NoSuchElementException as exceptElement
 
-from element import PageElement
-from locator import Locator
+from .locator import Locator
 
 
 class Todo(PageElement):
@@ -30,7 +30,7 @@ class CardContainer(PageElement, abc.ABC):
       po_cards.append(Card(card))
     return po_cards
 
-class AFazer(CardContainer):
+class Afazer(CardContainer):
 
   fieldset = Locator.FIELDSET
   card = Locator.CARD
@@ -73,40 +73,3 @@ class Card:
 
   def __repr__(self):
     return f'Card(name ="{self.name}", description = "{self.description}")'
-
-# -----------------------------------------------------------------
-
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-
-driver = webdriver.Chrome(ChromeDriverManager().install())
-url = 'https://selenium.dunossauro.live/todo_list.html'
-
-todo_element = Todo(driver,url)
-todo_element.open()
-
-todo_element.create_todo(
-  'Dormir',
-  'Dormir é muito bom'
-)
-
-a_fazer = AFazer(driver,url)
-todos = a_fazer.todos()
-# print(a_fazer.todos())
-
-# pega o primeiro card da lista e clica em Fazer ou cancel. 
-todos[0].click_do()
-
-fazendo = Fazendo(driver)
-todos[0].click_do() # move P/ Pronto
-
-pronto = Pronto(driver)
-# print(pronto.todos())
-todos[0].click_cancel() # click em refazer 
-
-
-
-
-
-
-

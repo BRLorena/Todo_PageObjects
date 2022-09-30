@@ -23,3 +23,12 @@ Pagina:
     - description
     - botao azul (pronto)
     - botao vermelho (cancelar)
+------------------------------------ Estrututra de pastas ---------------
+
+/page_objects (lib)
+  - page_objects
+  /pages (padrao)
+    - pages
+    - elements
+    - locators
+tests.py (utiliza)
